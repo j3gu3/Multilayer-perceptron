@@ -1,3 +1,5 @@
+package MLP;
+
 
 import java.util.Random;
 
@@ -13,8 +15,8 @@ import java.util.Random;
 public class CONFIG {
 
     private static CONFIG instance = null;
-    private final long seed = 15;
-    private final double learningRate = 0.95;
+    private final long seed = 6;
+    private final double learningRate = 0.4;
     private final Random r;
 
     protected CONFIG() {
