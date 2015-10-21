@@ -76,13 +76,13 @@ public class Neuron {
         this.name = name;
     }
 
-    protected double computeOutput() {
+    public double computeOutput() {
         double result = 0;
         String debug = "";
         for (Synapse inputSynapse : getInputSynapses()) {
             inputSynapse.getOrigin().computeOutput();
             result += inputSynapse.getWeight() * inputSynapse.getOrigin().getOutput();
-            debug += (inputSynapse.getWeight() + " * " + inputSynapse.getOrigin().getOutput() + " + ");
+            //debug += (inputSynapse.getWeight() + " * " + inputSynapse.getOrigin().getOutput() + " + ");
         }
         //System.out.print("Output "+name+": ");
         //System.out.print(debug);
@@ -91,29 +91,29 @@ public class Neuron {
         return output;
     }
 
-    protected void adjustWeight() {
+    public void adjustWeight() {
         double err = 0;
-        for (Synapse outputSynapse : outputSynapses) {
-            err += outputSynapse.getDestination().error * outputSynapse.getWeight();
+        for (Synapse outputSynapse : outputSynapses) { // DELTAj = SUM (weightJK * deltaK) | Hidden layers
+            err += outputSynapse.getWeight() * outputSynapse.getDestination().error;
         }
         this.error = err;
 
         for (Synapse inputSynapse : inputSynapses) {
             //System.out.print("Ajustando Peso de "+inputSynapse.getOrigin()+" para "+inputSynapse.getDestination()+": ERA: "+inputSynapse.getWeight());
+            double learningRate = CONFIG.getInstance().getLearningRate();
             double Yj = this.output;
             double Xi = inputSynapse.getOrigin().output;
-            double deltaW = CONFIG.getInstance().getLearningRate() * Xi * Yj * (1 - Yj) * error;
+            double deltaW = learningRate * Xi * Yj * (1 - Yj) * error;
             //System.out.println(" | "+inputSynapse.getWeight()+" + LR:"+CONFIG.getInstance().getLearningRate()+" * Xi:"+Xi +" * Yj:"+Yj+" * 1 - Yj:" + (1-Yj)+ " * erro:"+error);
 //            double deltaW = CONFIG.getInstance().getLearningRate() * Xi * (1 - Yj);
 //            System.out.println(" | "+ CONFIG.getInstance().getLearningRate()+" * "+Xi+" * ( 1 -"+Yj+")");
 
             inputSynapse.setWeight(inputSynapse.getWeight() + deltaW);
             //System.out.println(" FICOU: "+ inputSynapse.getWeight());
-            inputSynapse.getOrigin().adjustWeight();
         }
     }
 
-    protected double getOutput() {
+    public double getOutput() {
         return output;
     }
 

@@ -29,9 +29,7 @@ public class Input extends Neuron{
     }
 
     @Override
-    protected double computeOutput() {
-        //System.out.print("Output "+getName()+": ");
-        //System.out.println(output);
+    public double computeOutput() {
         return this.output;
     }
 

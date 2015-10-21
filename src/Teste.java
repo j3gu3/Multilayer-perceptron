@@ -20,17 +20,17 @@ public class Teste {
         mlp.addAttribute("p");
         mlp.addAttribute("q");
         
-        mlp.init();
-        
-        mlp.addValues(new ArrayList<Double>( Arrays.asList(1.0,1.0) ), 0);
-        mlp.addValues(new ArrayList<Double>( Arrays.asList(1.0,0.0) ), 1);
-        mlp.addValues(new ArrayList<Double>( Arrays.asList(0.0,1.0) ), 1);
-        mlp.addValues(new ArrayList<Double>( Arrays.asList(0.0,0.0) ), 0);
-        
-        
-        mlp.train();
-        
-        mlp.test(new ArrayList<Double>( Arrays.asList(1.0,0.0) ), 1);
+//        mlp.init();
+//        
+//        mlp.addValues(new ArrayList<Double>( Arrays.asList(1.0,1.0) ), 0);
+//        mlp.addValues(new ArrayList<Double>( Arrays.asList(1.0,0.0) ), 1);
+//        mlp.addValues(new ArrayList<Double>( Arrays.asList(0.0,1.0) ), 1);
+//        mlp.addValues(new ArrayList<Double>( Arrays.asList(0.0,0.0) ), 0);
+//        
+//        
+//        mlp.train();
+//        
+//        mlp.test(new ArrayList<Double>( Arrays.asList(1.0,0.0) ), 1);
         
 //        
 //        Input i1 = new Input(1, "I1");

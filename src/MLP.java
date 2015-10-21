@@ -30,6 +30,7 @@ public class MLP {
     private ArrayList<Output> outputs = new ArrayList<>();
 
     private ArrayList<ArrayList<Double>> data = new ArrayList<>();
+    private ArrayList<ArrayList<Double>> expected = new ArrayList<>();
 
     public MLP(int cycles, int firstLayer, int secondLayer, int classes) {
         this.cycles = cycles;
@@ -78,10 +79,11 @@ public class MLP {
         this.attributes.add(attribute);
     }
 
-    public void addValues(ArrayList<Double> values, double expected) {
-        values.add(expected);
-        if (values.size() == inputs.size()) {
-            data.add(values);
+    public void addValues(ArrayList<Double> values, ArrayList<Double> expected) {
+        //values.add(expected);
+        if (values.size() == inputs.size() - 1 && expected.size() == classes) {
+            this.data.add(values);
+            this.expected.add(expected);
         } else {
             System.out.println("NUMBER OF ATTRIBUTES IS WRONG!");
         }
@@ -89,28 +91,95 @@ public class MLP {
 
     public void train() {
         for (int i = 0; i < cycles; i++) {
+            double accuracy = 0;
             System.out.println("Cycle: " + (i + 1));
-            for (ArrayList<Double> values : data) {
-                for (int j = 0; j < values.size() - 1; j++) {
+            for (int k = 0; k < data.size(); k++) {
+                ArrayList<Double> values = data.get(k);
+                ArrayList<Double> valuesExpected = expected.get(k);
+
+                for (int j = 0; j < values.size(); j++) {
                     inputs.get(j).setValue(values.get(j));
                 }
+                this.feedforward();
+
+                int outCount = 0;
+                boolean error = false;
                 for (Output o : outputs) {
-                    System.out.print(o.getName() + ": " + o.computeOutput(values.get(values.size() - 1)));
+                    double result = Math.round(o.getOutput());
+                    System.out.println(o.getName() + ": "+o.getOutput()+" -> "+expected.get(outCount));
+                    if (result != valuesExpected.get(outCount)) {
+                        error = true;
+                    }
+                    outCount++;
                 }
-                System.out.println("");
+                if(error){
+                    System.out.println("NOK");
+                    backpropagation(valuesExpected);
+                }else{
+                    //System.out.println("OK");
+                    accuracy++;
+                }
             }
+            System.out.println("Accuracy = " + accuracy + " / "+ data.size() + " = " + (accuracy/data.size()));
             System.out.println("============");
         }
     }
 
-    public void test(ArrayList<Double> values, double expected) {
+    public void test(ArrayList<Double> values, ArrayList<Double> expected) {
         System.out.println("Test:");
         for (int j = 0; j < values.size(); j++) {
             inputs.get(j).setValue(values.get(j));
         }
+        
+        this.feedforward();
+        
+        int outCount = 0;
+        boolean error = false;
         for (Output o : outputs) {
-            System.out.print(o.getName() + ": " + o.computeTest(expected));
+            double result = Math.round(o.getOutput());
+            System.out.println(o.getName() + ": "+o.getOutput()+" -> "+expected.get(outCount));
+            if (result != expected.get(outCount)) {
+                error = true;
+            }
+            outCount++;
         }
+        if(error){
+            System.out.println("NOK");
+        }else{
+            System.out.println("OK");
+        }
+                
+//        int outCount = 0;
+//        for (Output o : outputs) {
+//            System.out.print(o.getName() + ": " + o.computeTest(expected.get(outCount)));
+//            outCount++;
+//        }
         System.out.println("");
+    }
+
+    public void feedforward() {
+        for (Neuron f : first) {
+            f.computeOutput();
+        }
+        for (Neuron s : second) {
+            s.computeOutput();
+        }
+        for (Output o : outputs) {
+            o.computeOutput();
+        }
+    }
+
+    public void backpropagation(ArrayList<Double> expected) {
+        int outCount = 0;
+        for (Output o : outputs) {
+            o.adjustWeight(expected.get(outCount));
+            outCount++;
+        }
+        for (Neuron s : second) {
+            s.adjustWeight();
+        }
+        for (Neuron f : first) {
+            f.adjustWeight();
+        }
     }
 }
