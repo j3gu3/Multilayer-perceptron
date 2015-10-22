@@ -16,7 +16,7 @@ public class CONFIG {
 
     private static CONFIG instance = null;
     private final long seed = 6;
-    private final double learningRate = 0.2;
+    private final double learningRate = 0.3;
     private final Random r;
 
     protected CONFIG() {
