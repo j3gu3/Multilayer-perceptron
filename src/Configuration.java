@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  * @author Rodrigo
  */
 public class Configuration {
-
+    private double accuracy;
     //private MLP mlp;
     public MLP readInputFile(String filename) {
         MLP mlp = null;
@@ -47,6 +47,9 @@ public class Configuration {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (mlp != null) {
+            mlp.init();
         }
         return mlp;
     }
@@ -189,7 +192,7 @@ public class Configuration {
                         f.addInputSynapse(s);
                     }
                 }
-               // System.out.println("TROCOU F");
+                // System.out.println("TROCOU F");
             }
             //System.out.println("");
             for (Neuron sec : mlp.getSecond()) {
@@ -230,9 +233,7 @@ public class Configuration {
         }
         return mlp;
     }
-    
-    
-    
+
     public void readTestFile(String filename, MLP mlp) {
         try {
             FileReader fr = new FileReader(filename);
@@ -244,10 +245,16 @@ public class Configuration {
             line = br.readLine();
             //readMLPAttributes(line, mlp);
 
+            FileWriter fileWriter = new FileWriter("teste.txt");
+            BufferedWriter bw = new BufferedWriter(fileWriter);
+            double lines = 0;
+            accuracy = 0;
             while ((line = br.readLine()) != null) {
-                readMLPTestData(line, mlp);
+                lines++;
+                readMLPTestData(line, mlp, bw);
             }
-
+            System.out.println(accuracy/lines);
+            bw.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -255,13 +262,21 @@ public class Configuration {
         }
     }
 
-    private void readMLPTestData(String line, MLP mlp) throws NumberFormatException {
+    private void readMLPTestData(String line, MLP mlp, BufferedWriter bw) throws IOException {
         ArrayList<Double> values = new ArrayList<>();
         String[] args = line.split(" ");
         for (int i = 0; i < args.length - 1; i++) {
             values.add(Double.parseDouble(args[i]));
         }
-        mlp.test(values, args[args.length - 1]);
+        String result = mlp.test(values, args[args.length - 1]);
+
+        bw.append(args[args.length - 1] + " " + result);
+        bw.newLine();
+        //System.out.println(args[args.length - 1] + " " + result);
+        if(result.equals(args[args.length - 1])){
+            //System.out.println("AQUI");
+            accuracy++;
+        }
     }
-    
+
 }

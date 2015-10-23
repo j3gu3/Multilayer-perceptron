@@ -127,13 +127,13 @@ public class TesteIris {
 
                 */
         
-        //MLP mlp = (new Configuration()).readInputFile("iris.txt");
-        //mlp.init();
+        MLP mlp = (new Configuration()).readInputFile("iris.txt");
+
         
-        //mlp.train();
+        mlp.train();
         //(new Configuration()).generateNeuralNetwork(mlp);
         
-        MLP mlp = (new Configuration()).readConfigurationFile("rede_neural.txt");
+        //MLP mlp = (new Configuration()).readConfigurationFile("rede_neural.txt");
         
         //(new Configuration()).generateNeuralNetwork(mlp2);
         
