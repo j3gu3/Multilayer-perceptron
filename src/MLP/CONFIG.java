@@ -1,6 +1,5 @@
 package MLP;
 
-
 import java.util.Random;
 
 /*
@@ -15,9 +14,9 @@ import java.util.Random;
 public class CONFIG {
 
     private static CONFIG instance = null;
-    private final long seed = 6;
-    private final double learningRate = 0.3;
-    private final Random r;
+    private long seed = 74;
+    private double learningRate = 0.403;
+    private Random r;
 
     protected CONFIG() {
         r = new Random(seed);
@@ -30,12 +29,28 @@ public class CONFIG {
         return instance;
     }
 
+    public void resetRandomGenerator(){
+        r = new Random(seed);
+    }
     public Random getRandomGenerator() {
         return this.r;
     }
 
     public double getLearningRate() {
         return learningRate;
+    }
+
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    public long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(long seed) {
+        this.seed = seed;
+        resetRandomGenerator();
     }
 
 }

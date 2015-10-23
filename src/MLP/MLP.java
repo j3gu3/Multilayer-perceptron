@@ -126,9 +126,10 @@ public class MLP {
         return expectedOutput;
     }
 
-    public void train() {
+    public double train() {
+        double accuracy = 0;
         for (int i = 0; i < cycles; i++) {
-            double accuracy = 0;
+            accuracy = 0;
             System.out.println("Cycle: " + (i + 1));
             for (int k = 0; k < data.size(); k++) {
                 ArrayList<Double> values = data.get(k);
@@ -143,17 +144,30 @@ public class MLP {
 
                 int outCount = 0;
                 boolean error = false;
-                //System.out.println("__");
-                //System.out.println(classExpected + " -> "+ valuesExpected);
+                ArrayList<Double> res = new ArrayList<>();
+                //ArrayList<Double> res2 = new ArrayList<>();
+                Double maior = null;
+                int index = -1;
+
                 for (Output o : outputs) {
-                    double result = Math.round(o.getOutput());
-                    //  System.out.println(o.getName() + ": " + o.getOutput() + " -> " + valuesExpected.get(outCount));
-                    if (result != valuesExpected.get(outCount)) {
-                        error = true;
+                    res.add(0.0);
+                    double result = o.getOutput();
+                    if (maior == null) {
+                        maior = result;
+                        index = outCount;
+                    } else {
+                        if (result > maior) {
+                            maior = result;
+                            index = outCount;
+                        }
                     }
+
                     outCount++;
                 }
-                if (error) {
+                res.set(index, 1.0);
+
+                //System.out.println(res + " - "+valuesExpected+" === "+res.equals(valuesExpected));
+                if (!valuesExpected.equals(res)) {
                     //  System.out.println("NOK");
                     backpropagation(valuesExpected);
                 } else {
@@ -164,34 +178,51 @@ public class MLP {
             System.out.println("Accuracy = " + accuracy + " / " + data.size() + " = " + (accuracy / data.size()));
             System.out.println("============");
         }
+        return accuracy;
     }
 
-    public void test(ArrayList<Double> values, String expected) {
-        System.out.println("Test:");
+    public String test(ArrayList<Double> values, String expected) {
+        //System.out.println("Test:");
         for (int j = 0; j < values.size(); j++) {
             inputs.get(j).setValue(values.get(j));
         }
 
         this.feedforward();
 
-        ArrayList<Double> valuesExpected = getExpectedClassOutput(expected);
-        System.out.println(expected + " -> " + valuesExpected);
+        //ArrayList<Double> valuesExpected = getExpectedClassOutput(expected);
+        ArrayList<Double> res = new ArrayList<>();
+        //System.out.println(expected + " -> " + valuesExpected);
         int outCount = 0;
-        boolean error = false;
+        Double maior = null;
+        int index = -1;
         for (Output o : outputs) {
-            double result = Math.round(o.getOutput());
-            System.out.println(o.getName() + ": " + o.getOutput() + " -> " + valuesExpected.get(outCount) + " || " + (result == valuesExpected.get(outCount)));
-            if (result != valuesExpected.get(outCount)) {
-                error = true;
+            res.add(0.0);
+            double result = o.getOutput();
+            if (maior == null) {
+                maior = result;
+                index = outCount;
+            } else {
+                if (result > maior) {
+                    maior = result;
+                    index = outCount;
+                }
             }
+
             outCount++;
         }
-        if (error) {
-            System.out.println("NOK");
+        res.set(index, 1.0);
+        /*if (!valuesExpected.equals(res)) {
+            //   System.out.println("NOK");
         } else {
-            System.out.println("OK");
+            //  System.out.println("OK");
+        }*/
+        //System.out.println("");
+        //System.out.println(res);
+        try {
+            return classes.get(res.indexOf(1.0));
+        } catch (IndexOutOfBoundsException e) {
+            return "UNDEFINED";
         }
-        System.out.println("");
     }
 
     public void feedforward() {
@@ -227,7 +258,7 @@ public class MLP {
     public void setInputs(ArrayList<Input> inputs) {
         this.inputs = inputs;
     }
-    
+
     public void setFirst(ArrayList<Neuron> first) {
         this.first = first;
     }
