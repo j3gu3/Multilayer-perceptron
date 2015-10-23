@@ -100,7 +100,8 @@ public class Neuron {
             inputSynapse.getOrigin().computeOutput();
             result += inputSynapse.getWeight() * inputSynapse.getOrigin().getOutput();
         }
-        return computeSigmoidFunction(result);
+        output = computeSigmoidFunction(result);
+        return output;
     }
 
     /**
