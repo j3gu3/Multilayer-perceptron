@@ -1,5 +1,4 @@
 
-import MLP.Input;
 import MLP.MLP;
 import MLP.Neuron;
 import MLP.Output;
@@ -268,7 +267,7 @@ public class Configuration {
         for (int i = 0; i < args.length - 1; i++) {
             values.add(Double.parseDouble(args[i]));
         }
-        String result = mlp.test(values, args[args.length - 1]);
+        String result = mlp.test(values);
 
         bw.append(args[args.length - 1] + " " + result);
         bw.newLine();

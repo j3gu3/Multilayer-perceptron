@@ -1,12 +1,7 @@
 package MLP;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
+ * Output Neuron, this will contain the output of the Neural Network
  * @author Rodrigo
  */
 public class Output extends Neuron {
@@ -18,50 +13,38 @@ public class Output extends Neuron {
     public Output() {
     }
 
-    public double computeTest(double valueExpected) {
-        double result = super.computeOutput();
-//        double rr = Math.round(result);
-//        if (rr != valueExpected) {
-//            System.out.println("NOK");
-//        } else {
-//            System.out.println("OK");
-//        }
-        return result;
-    }
-
+    /**
+     * Compute the Output of this Neuron
+     * @return computed output | y
+     */
     @Override
     public double computeOutput() {
         return super.computeOutput();
     }
-    
-//    public double computeOutput(double valueExpected) {
-//        double result = super.computeOutput();
-//        double rr = Math.round(result);
-//        if (rr != valueExpected) {
-//            System.out.println("NOK");
-//            adjustWeight(result, valueExpected);
-//        } else {
-//            System.out.println("OK");
-//        }
-//        return result;
-//    }
 
+    /**
+     * Adjust the weight of the Output Neuron Uses the equation: weight += ∆wij
+     *
+     * ∆wij = ηxi * yj * (1 - yj) * δj 
+     * δj = (dj - yj ) (Last Layer)
+     *
+     * i = previous layer | j = current layer 
+     * xi = output of the neuron in the previous layer 
+     * yj = output of the current layer.
+     * dj = expected value 
+     * η = learning rate
+     * @param expected value expected
+     */
     public void adjustWeight(double expected) {
-        //DELTAj = (Dj - Yj)
-        double computed = this.output;
+        double computed = this.output; //δj = (Dj - Yj)
         error = (expected - computed);
         for (Synapse inputSynapse : getInputSynapses()) {
-            //System.out.println("Ajustando Peso de "+inputSynapse.getOrigin()+" para "+inputSynapse.getDestination()+": ERA: "+inputSynapse.getWeight());
             double learningRate = CONFIG.getInstance().getLearningRate();
-            double Yj = this.output;
             double Xi = inputSynapse.getOrigin().output;
-            double deltaW = learningRate * Xi * Yj * (1 - Yj) * error;
-            //System.out.println(" | "+inputSynapse.getWeight()+" + LR:"+CONFIG.getInstance().getLearningRate()+" * Xi:"+Xi +" * Yj:"+Yj+" * 1 - Yj:" + (1-Yj)+ " * erro:"+error);
-//            double deltaW = CONFIG.getInstance().getLearningRate() * Xi * (1 - Yj);
-//            System.out.println(" | "+ CONFIG.getInstance().getLearningRate()+" * "+Xi+" * ( 1 -"+Yj+")");
+            double Yj = this.output;
+            double deltaW = learningRate * Xi * Yj * (1 - Yj) * error; // ηxi * yj * (1 - yj) * δj
 
-            inputSynapse.setWeight(inputSynapse.getWeight() + deltaW);
-            //System.out.println(" FICOU: "+ inputSynapse.getWeight());
+            inputSynapse.setWeight(inputSynapse.getWeight() + deltaW);;
         }
     }
 

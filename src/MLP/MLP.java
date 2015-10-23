@@ -1,15 +1,9 @@
 package MLP;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author Rodrigo
@@ -30,9 +24,7 @@ public class MLP {
     private ArrayList<Neuron> second = new ArrayList<>();
     private ArrayList<Output> outputs = new ArrayList<>();
 
-    private ArrayList<ArrayList<Double>> data = new ArrayList<>();
-    //private HashMap<ArrayList<Double>, ArrayList<String>> dataExpected = new HashMap<>();
-    private ArrayList<String> expected = new ArrayList<>();
+    private ArrayList<DataSet> dataset = new ArrayList<>();
 
     public MLP(int cycles, int firstLayer, int secondLayer, int classes) {
         this.cycles = cycles;
@@ -101,10 +93,11 @@ public class MLP {
     }
 
     public void addValues(ArrayList<Double> values, String classExpected) {
-        //values.add(expected);
+
         //if (values.size() == inputs.size()) {
-        this.data.add(values);
-        this.expected.add(classExpected);
+        DataSet<Double> set = new DataSet<>(values, classExpected);
+        dataset.add(set);
+
         if (!classes.contains(classExpected)) {
             classes.add(classExpected);
         }
@@ -129,13 +122,14 @@ public class MLP {
     public double train() {
         double accuracy = 0;
         for (int i = 0; i < cycles; i++) {
+            Collections.shuffle(dataset);
             accuracy = 0;
             System.out.println("Cycle: " + (i + 1));
-            for (int k = 0; k < data.size(); k++) {
-                ArrayList<Double> values = data.get(k);
+            for (int k = 0; k < dataset.size(); k++) {
+                DataSet<Double> set = dataset.get(k);
+                ArrayList<Double> values = set.getData();
 
-                String classExpected = expected.get(k);
-                ArrayList<Double> valuesExpected = getExpectedClassOutput(classExpected);
+                ArrayList<Double> valuesExpected = getExpectedClassOutput(set.getClassName());
 
                 for (int j = 0; j < values.size(); j++) {
                     inputs.get(j).setValue(values.get(j));
@@ -143,9 +137,7 @@ public class MLP {
                 this.feedforward();
 
                 int outCount = 0;
-                boolean error = false;
                 ArrayList<Double> res = new ArrayList<>();
-                //ArrayList<Double> res2 = new ArrayList<>();
                 Double maior = null;
                 int index = -1;
 
@@ -168,30 +160,26 @@ public class MLP {
 
                 //System.out.println(res + " - "+valuesExpected+" === "+res.equals(valuesExpected));
                 if (!valuesExpected.equals(res)) {
-                    //  System.out.println("NOK");
                     backpropagation(valuesExpected);
                 } else {
-                    //System.out.println("OK");
                     accuracy++;
                 }
             }
-            System.out.println("Accuracy = " + accuracy + " / " + data.size() + " = " + (accuracy / data.size()));
+            System.out.println("Accuracy = " + accuracy + " / " + dataset.size() + " = " + (accuracy / dataset.size()));
             System.out.println("============");
         }
         return accuracy;
     }
 
-    public String test(ArrayList<Double> values, String expected) {
-        //System.out.println("Test:");
+    public String test(ArrayList<Double> values) {
         for (int j = 0; j < values.size(); j++) {
             inputs.get(j).setValue(values.get(j));
         }
 
         this.feedforward();
 
-        //ArrayList<Double> valuesExpected = getExpectedClassOutput(expected);
         ArrayList<Double> res = new ArrayList<>();
-        //System.out.println(expected + " -> " + valuesExpected);
+
         int outCount = 0;
         Double maior = null;
         int index = -1;
@@ -211,13 +199,7 @@ public class MLP {
             outCount++;
         }
         res.set(index, 1.0);
-        /*if (!valuesExpected.equals(res)) {
-            //   System.out.println("NOK");
-        } else {
-            //  System.out.println("OK");
-        }*/
-        //System.out.println("");
-        //System.out.println(res);
+
         try {
             return classes.get(res.indexOf(1.0));
         } catch (IndexOutOfBoundsException e) {

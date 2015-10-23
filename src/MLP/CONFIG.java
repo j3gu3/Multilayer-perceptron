@@ -2,20 +2,22 @@ package MLP;
 
 import java.util.Random;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
+ * Configuration of the MLP
  * @author Rodrigo
  */
 public class CONFIG {
 
     private static CONFIG instance = null;
+    /**
+     * Seed to generate the random values
+     */
     private long seed = 74;
+    /**
+     * Learning Rate η, used in the backpropagation to adjust the weights
+     */
     private double learningRate = 0.403;
+    
     private Random r;
 
     protected CONFIG() {
@@ -29,9 +31,10 @@ public class CONFIG {
         return instance;
     }
 
-    public void resetRandomGenerator(){
+    public void resetRandomGenerator() {
         r = new Random(seed);
     }
+
     public Random getRandomGenerator() {
         return this.r;
     }

@@ -1,15 +1,7 @@
 package MLP;
 
-
-import java.util.ArrayList;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
- *
+ * Synapse of the Neuron, contain the origin neuron, destination neuron and the weight of the synapse
  * @author Rodrigo
  */
 public class Synapse {
@@ -31,7 +23,8 @@ public class Synapse {
     }
 
     /**
-     * Can be used for test purpose
+     * Create a Synapse with the origin, the destination and the weight
+     * Used for test purpose
      *
      * @param origin
      * @param destination
@@ -43,6 +36,9 @@ public class Synapse {
         this.weight = weight;
     }
 
+    /**
+     * Init weight with random values (between -1.0 and 1.0)
+     */
     private void init() {
         weight = (2 * CONFIG.getInstance().getRandomGenerator().nextDouble()) - 1;
     }

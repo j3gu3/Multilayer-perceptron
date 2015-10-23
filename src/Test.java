@@ -11,7 +11,7 @@ import MLP.MLP;
  *
  * @author Rodrigo
  */
-public class Teste {
+public class Test {
 
     public static void main(String[] args) {
         Configuration c = new Configuration();

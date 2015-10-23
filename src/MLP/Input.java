@@ -1,23 +1,18 @@
 package MLP;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- *
+ * Input neuron
  * @author Rodrigo
  */
-public class Input extends Neuron{
+public class Input extends Neuron {
 
     public Input() {
     }
 
-    public Input (String name){
+    public Input(String name) {
         super(name);
     }
+
     public Input(double value) {
         output = value;
     }
@@ -36,8 +31,5 @@ public class Input extends Neuron{
     public void setValue(double value) {
         this.output = value;
     }
-    
-    
-    
-    
+
 }

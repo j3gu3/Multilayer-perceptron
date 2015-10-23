@@ -3,26 +3,34 @@ package MLP;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author Rodrigo
  */
 public class Neuron {
 
+    /**
+     * All Synapses that connects the previous layer to this Neuron
+     */
     private ArrayList<Synapse> inputSynapses = new ArrayList<>();
+    
+    /** * All Synapses that connects this layer to the next Layer */
     private ArrayList<Synapse> outputSynapses = new ArrayList<>();
-
+    
+    /**
+     * Output of the Neuron
+     */
     protected double output = 0.0;
+    
+    /**
+     * Given by:
+     * δj= ∑(Wjk * δk) (Hidden layers)
+     * δj = (dj - yj ) (Last Layer)
+     */
     protected double error = 0.0;
 
-    protected String name; /*Just for test purpose*/
+    protected String name; 
 
 
     public Neuron() {
@@ -76,21 +84,39 @@ public class Neuron {
         this.name = name;
     }
 
+    /**
+     * Compute the Output of the Neuron
+     * Given by: 
+     * output = xθ * wθ + ∑(xi * wi)
+     * xθ = BIAS output (1)
+     * wθ = weight of the synapse
+     * xi = output of the previous neuron
+     * wi = weight of the synapse from the xi to the current neuron
+     * @return 
+     */
     public double computeOutput() {
         double result = 0;
-        String debug = "";
         for (Synapse inputSynapse : getInputSynapses()) {
             inputSynapse.getOrigin().computeOutput();
             result += inputSynapse.getWeight() * inputSynapse.getOrigin().getOutput();
-            //debug += (inputSynapse.getWeight() + " * " + inputSynapse.getOrigin().getOutput() + " + ");
         }
-        //System.out.print("Output "+name+": ");
-        //System.out.print(debug);
-        //System.out.println(" = " + result + " Sigmoid:"+computeSigmoidalCurve(result));
-        output = computeSigmoidalCurve(result);
-        return output;
+        return computeSigmoidFunction(result);
     }
 
+    /**
+     * Adjust the weight of the Output Neuron Uses the equation: weight += ∆wij
+     *
+     * ∆wij = ηxi * yj * (1 - yj) * δj 
+     * δj= ∑(Wjk * δk) (Hidden layers)
+     *
+     * i = previous layer | j = current layer 
+     * xi = output of the neuron in the previous layer 
+     * yj = output of the current layer.
+     * Wjk = weight of the synapse from the current layer(j) to the Neuron(k) in the next layer
+     * δk = error of the Neuron(k) that is in the next layer
+     * dj = expected value 
+     * η = learning rate
+     */
     public void adjustWeight() {
         double err = 0;
         for (Synapse outputSynapse : outputSynapses) { // DELTAj = SUM (weightJK * deltaK) | Hidden layers
@@ -99,17 +125,11 @@ public class Neuron {
         this.error = err;
 
         for (Synapse inputSynapse : inputSynapses) {
-            //System.out.print("Ajustando Peso de "+inputSynapse.getOrigin()+" para "+inputSynapse.getDestination()+": ERA: "+inputSynapse.getWeight());
             double learningRate = CONFIG.getInstance().getLearningRate();
             double Yj = this.output;
             double Xi = inputSynapse.getOrigin().output;
             double deltaW = learningRate * Xi * Yj * (1 - Yj) * error;
-            //System.out.println(" | "+inputSynapse.getWeight()+" + LR:"+CONFIG.getInstance().getLearningRate()+" * Xi:"+Xi +" * Yj:"+Yj+" * 1 - Yj:" + (1-Yj)+ " * erro:"+error);
-//            double deltaW = CONFIG.getInstance().getLearningRate() * Xi * (1 - Yj);
-//            System.out.println(" | "+ CONFIG.getInstance().getLearningRate()+" * "+Xi+" * ( 1 -"+Yj+")");
-
-            inputSynapse.setWeight(inputSynapse.getWeight() + deltaW);
-            //System.out.println(" FICOU: "+ inputSynapse.getWeight());
+            inputSynapse.setWeight(inputSynapse.getWeight() + deltaW);;
         }
     }
 
@@ -117,11 +137,15 @@ public class Neuron {
         return output;
     }
 
-    protected double computeSigmoidalCurve(double value) {
+    /**
+     * Compute the Sigmoid Function
+     * Given by: 1 / (1 + e^(-value))
+     * 
+     * @param value
+     * @return 
+     */
+    protected double computeSigmoidFunction(double value) {
         return 1 / (1 + Math.pow(Math.E, -value));
-        /* if(value > 0)
-         return 1;
-         return 0;*/
     }
 
     @Override
