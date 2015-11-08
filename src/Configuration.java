@@ -24,7 +24,9 @@ import java.util.logging.Logger;
  * @author Rodrigo
  */
 public class Configuration {
+
     private double accuracy;
+
     //private MLP mlp;
     public MLP readInputFile(String filename) {
         MLP mlp = null;
@@ -252,7 +254,7 @@ public class Configuration {
                 lines++;
                 readMLPTestData(line, mlp, bw);
             }
-            System.out.println(accuracy/lines);
+            System.out.println(accuracy / lines);
             bw.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
@@ -272,9 +274,39 @@ public class Configuration {
         bw.append(args[args.length - 1] + " " + result);
         bw.newLine();
         //System.out.println(args[args.length - 1] + " " + result);
-        if(result.equals(args[args.length - 1])){
+        if (result.equals(args[args.length - 1])) {
             //System.out.println("AQUI");
             accuracy++;
+        }
+    }
+
+    public void readAvaliationFile(String filename, String className) {
+        Avaliate av = new Avaliate(filename, className);
+        try {
+            FileWriter fileWriter = new FileWriter("avaliation.txt");
+            BufferedWriter bw = new BufferedWriter(fileWriter);
+            bw.append("Avaliação referente a classe: "+className);
+            bw.newLine();
+            bw.append("Acuracia: " + av.getAccuracy());
+            bw.newLine();
+            bw.append("Precisão: " + av.getPrecision());
+            bw.newLine();
+            bw.append("Cobertura: " + av.getCoverage());
+            bw.newLine();
+            bw.append("Medida F1: " + av.getF1());
+            bw.newLine();
+            System.out.println("Avaliação referente a classe: "+className);
+            System.out.println("");
+            System.out.println("Acuracia: " + av.getAccuracy());
+            System.out.println("");
+            System.out.println("Precisão: " + av.getPrecision());
+            System.out.println("");
+            System.out.println("Cobertura: " + av.getCoverage());
+            System.out.println("");
+            System.out.println("Medida F1: " + av.getF1());
+            bw.close();
+        } catch (Exception ex) {
+            Logger.getLogger(Configuration.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

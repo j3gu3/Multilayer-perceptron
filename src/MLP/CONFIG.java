@@ -16,7 +16,7 @@ public class CONFIG {
     /**
      * Learning Rate η, used in the backpropagation to adjust the weights
      */
-    private double learningRate = 0.403;
+    private double learningRate = 0.3;
     
     private Random r;
 

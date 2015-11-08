@@ -3,6 +3,7 @@ package MLP;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -121,8 +122,9 @@ public class MLP {
 
     public double train() {
         double accuracy = 0;
+        
         for (int i = 0; i < cycles; i++) {
-            Collections.shuffle(dataset);
+            Collections.shuffle(dataset, new Random(10));
             accuracy = 0;
             System.out.println("Cycle: " + (i + 1));
             for (int k = 0; k < dataset.size(); k++) {

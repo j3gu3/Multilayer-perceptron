@@ -8,7 +8,7 @@ import MLP.MLP;
  */
 public class BruteForce {
 
-    public static void main(String[] args) {
+    public BruteForce(String inputFile) {
         double bestLR = -1;
         int bestSeed = -1;
         double bestAccuracy = -1;
@@ -30,7 +30,7 @@ public class BruteForce {
                 }
 
                 Configuration c = new Configuration();
-                MLP mlp = c.readInputFile("car.train");
+                MLP mlp = c.readInputFile(inputFile);
                 double accuracy = mlp.train();
                 System.out.println("-->LR: " + lr + " Seed: " + seed + " Accuracy: " + accuracy);
                 if (bestAccuracy == -1) {

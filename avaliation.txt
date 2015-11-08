@@ -1,0 +1,5 @@
+Avaliação referente a classe: bad
+Acuracia: 0.9271523178807947
+Precisão: 0.9
+Cobertura: 0.6666666666666666
+Medida F1: 0.7659574468085106
